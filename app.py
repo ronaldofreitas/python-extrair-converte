@@ -3,8 +3,7 @@ from google.cloud import storage
 import os
 import subprocess
 storage_client = storage.Client()
-bucket_destino = storage_client.get_bucket("catalobyte-input")
-bucket_origem_apagar = storage_client.get_bucket("catalobyte-convert")
+bucket_origem = storage_client.get_bucket("catalobyte-convert")
 
 app = Flask(__name__)
 
@@ -21,7 +20,7 @@ def receive():
 
     splifile = full_path_uri[1].split('-')
     spliexten = full_path_uri[1].split('.')
-    extension = spliexten[1]
+    extension = spliexten[1] #  line 24, in receive extension = spliexten[1] IndexError: list index out of range
     indexmanti = splifile[0]
     nomearquivo = splifile[2]
     onlyname = nomearquivo.split('.')[0]
@@ -38,13 +37,16 @@ def receive():
     cmd = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-i', tempfile, '-f', 'flac','-ac', '1', '-ab', '192000', '-vn', destname]
     subprocess.call(cmd)
 
-    blob = bucket_origem_apagar.blob(uid_firebase+'/'+indexmanti+'/'+onlyname+'/'+destname)
+    blob = bucket_origem.blob(uid_firebase+'/'+indexmanti+'/'+onlyname+'/'+destname)
     blob.upload_from_filename(destname)
+    blob_del = bucket_origem.delete_blob(gs_uri)
 
     '''
-    blob = bucket_destino.blob(foldername+'/'+index_manticore+'/'+file_id+'/'+destname)
+    # a transcrição será manual
+    
+    blob = bucket_destino.blob(uid_firebase+'/'+indexmanti+'/'+onlyname+'/'+destname)
     blob.upload_from_filename(destname)
-    blob_del = bucket_origem_apagar.delete_blob(foldername+'/'+file_name_uri)
+    blob_del = bucket_origem.delete_blob(gs_uri)
     '''
 
     return "ok"
