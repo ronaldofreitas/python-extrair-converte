@@ -10,24 +10,22 @@ app = Flask(__name__)
 
 @app.route("/", methods=["POST"])
 def receive():
-
     data = request.get_json()
-
     gs_uri = data['filepath'] #name: '1sPcgixNZobTGi1McrKK7UyaZUd2/o6h0z2g9c7-1635332818807-8833777097.avi
 
-    #gs_uri = '1sPcgixNZobTGi1McrKK7UyaZUd2/o6h0z2g9c7-1635332818807-8833777097.avi'
     full_path_uri = gs_uri.split('/')
-    uid_firebase = full_path_uri[0]
+    uid_firebase = full_path_uri[0] # 1sPcgixNZobTGi1McrKK7UyaZUd2
 
-    splifile = full_path_uri[1].split('-')
-    spliexten = full_path_uri[1].split('.')
-    extension = spliexten[1] #  line 24, in receive extension = spliexten[1] IndexError: list index out of range
-    indexmanti = splifile[0]
-    nomearquivo = splifile[2]
-    onlyname = nomearquivo.split('.')[0]
+    splifile = full_path_uri[1].split('-') # o6h0z2g9c7-1635332818807-8833777097.avi
+    spliexten = full_path_uri[1].split('.') # o6h0z2g9c7-1635332818807-8833777097.avi
+    extension = spliexten[1] # avi
+    indexmanti = splifile[0] # o6h0z2g9c7
+    timestampname = splifile[1] # 1635332818807
+    nomearquivo = splifile[2] # 8833777097.avi
+    onlyname = nomearquivo.split('.')[0] # 8833777097
 
     tempfile = "temp."+extension
-    destname = onlyname+".flac"
+    destname = timestampname+".flac"
 
     # gs://catalobyte-convert/1sPcgixNZobTGi1McrKK7UyaZUd2/o6h0z2g9c7-1635332818807-8833777097.avi
     if not os.path.exists(tempfile):

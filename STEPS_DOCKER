@@ -9,7 +9,7 @@ docker build -t ronaldofreitas/extrair-converte .
 
 pega o ID da imagem... docker images
 
-docker tag 9a028bbcf561 gcr.io/catalobyte-311413/catalobyte/extrair-converte && docker push gcr.io/catalobyte-311413/catalobyte/extrair-converte
+docker tag 8d58c5ec3634 gcr.io/catalobyte-311413/catalobyte/extrair-converte && docker push gcr.io/catalobyte-311413/catalobyte/extrair-converte
 
 
 
