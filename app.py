@@ -4,6 +4,7 @@ import os
 import subprocess
 storage_client = storage.Client()
 bucket_origem = storage_client.get_bucket("catalobyte-convert")
+bucket_destino = storage_client.get_bucket("catalobyte-pre-speech")
 
 app = Flask(__name__)
 
@@ -34,20 +35,12 @@ def receive():
     with open(tempfile, 'wb+') as file_obj:
         storage_client.download_blob_to_file('gs://catalobyte-convert/'+gs_uri, file_obj)
 
-    cmd = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-i', tempfile, '-f', 'flac','-ac', '1', '-ab', '192000', '-vn', destname]
+    cmd = ['ffmpeg', '-hide_banner', '-loglevel', 'error', '-i', tempfile, '-f', 'flac','-ac', '1', '-ab', '192000', '-ar', '16000', '-vn', destname]
     subprocess.call(cmd)
 
-    blob = bucket_origem.blob(uid_firebase+'/'+indexmanti+'/'+onlyname+'/'+destname)
-    blob.upload_from_filename(destname)
-    blob_del = bucket_origem.delete_blob(gs_uri)
-
-    '''
-    # a transcrição será manual
-    
     blob = bucket_destino.blob(uid_firebase+'/'+indexmanti+'/'+onlyname+'/'+destname)
     blob.upload_from_filename(destname)
     blob_del = bucket_origem.delete_blob(gs_uri)
-    '''
 
     return "ok"
 
